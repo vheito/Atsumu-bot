@@ -154,7 +154,7 @@ if (opcion === '2' || methodCode) {
   let addNumber
   if (!!phoneNumber) {
   addNumber = phoneNumber.replace(/[^0-9]/g, '')
-  if (!Object.keys(PHONENUMBER_MCC).some(v => addNumber.startsWith(v))) {
+  if (PHONENUMBER_MCC && !Object.keys(PHONENUMBER_MCC).some(v => addNumber.startsWith(v))) {
   console.log(chalk.bgBlack(chalk.bold.redBright("\n\n🌸 Su número debe comenzar con el codigo de pais 🌸")))
   process.exit(0)
   }} else {
@@ -162,11 +162,13 @@ if (opcion === '2' || methodCode) {
   addNumber = await question(chalk.bgBlack(chalk.bold.greenBright("\n\n🌸 Escriba su numero 🌸\n\nEjemplo: 5491168xxxx\n\n\n\n")))
   addNumber = addNumber.replace(/[^0-9]/g, '')
 
-  if (addNumber.match(/^\d+$/) && Object.keys(PHONENUMBER_MCC).some(v => addNumber.startsWith(v))) {
-  break 
-  } else {
+  if (addNumber.match(/^\d+$/)) {
+    if (!PHONENUMBER_MCC || Object.keys(PHONENUMBER_MCC).some(v => addNumber.startsWith(v))) {
+      break
+    }
+  }
   console.log(chalk.bgBlack(chalk.bold.redBright("\n\n🌸 Asegúrese de agregar el código de país 🌸")))
-  }}
+  }
   }
 
   setTimeout(async () => {
