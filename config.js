@@ -20,13 +20,13 @@ global.APIKeys = { // APIKey Here
 }
 
 // Sticker WM
-global.packname = '𝐘𝐔𝐌𝐈𝐊𝐎' 
-global.author = '@𝐌𝐱𝐳.18𝐥' 
-global.descripcion = '𝐒𝐨𝐥𝐨 𝐩𝐫𝐞𝐠𝐮𝐧𝐭𝐚𝐬 𝐝𝐞𝐥 𝐛𝐨𝐭'
+global.packname = '𝐀𝐭𝐬𝐮𝐦𝐮-𝐁𝐨𝐭' 
+global.author = '@𝐈𝐬𝐚𝐚𝐜𝐗𝐳 👑' 
+global.descripcion = '𝐖𝐚𝐁𝐨𝐭 𝐑𝐞𝐯𝐨𝐥𝐮𝐜𝐢𝐨𝐧𝐚𝐝𝐨 𝐁𝐲 𝐈𝐬𝐚𝐚𝐜𝐗𝐳 👑'
 
 //--info FG
-global.botName = '𝐘𝐔𝐌𝐈𝐊𝐎'
-global.fgig = '𝐒𝐨𝐥𝐨 𝐩𝐫𝐞𝐠𝐮𝐧𝐭𝐚𝐬 𝐝𝐞𝐥 𝐛𝐨𝐭' 
+global.botName = '𝐀𝐭𝐬𝐮𝐦𝐮-𝐁𝐨𝐭'
+global.fgig = '𝐖𝐚𝐛𝐨𝐭 𝐅𝐨𝐫 𝐖𝐡𝐚𝐭𝐬𝐚𝐩𝐩 🍃' 
 global.fgigt = 'https://instagram.com/Mxz.18.l' 
 global.fgsc = 'https://github.com/Maxz-on/Yumiko-.git' 
 global.fgyt = ''
@@ -50,9 +50,9 @@ global.año = d.toLocaleDateString('es', {year: 'numeric'});
 global.tiempo = d.toLocaleString('en-US', {hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: true});
 //* ****************************
 
-global.wait = '🌸 𝐂𝐚𝐫𝐠𝐚𝐧𝐝𝐨....'
+global.wait = '⚡ 𝐂𝐚𝐫𝐠𝐚𝐧𝐝𝐨....'
 global.rwait = '⌛'
-global.dmoji = '🤭'
+global.dmoji = '⚡'
 global.done = '✅'
 global.error = '❌' 
 global.xmoji = '🔥' 
