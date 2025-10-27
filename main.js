@@ -1,7 +1,6 @@
-
 process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
 import './config.js'; 
-import { createRequire } from "module"; // Bring in the ability to create the 'require' method
+import { createRequire } from "module";
 import path, { join } from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 import { platform } from 'process'
@@ -30,9 +29,9 @@ const {
     PHONENUMBER_MCC
    } = await import('@whiskeysockets/baileys')
 import moment from 'moment-timezone'
-import NodeCache from 'node-cache'
 import readline from 'readline'
 import fs from 'fs'
+
 const { CONNECTING } = ws
 const { chain } = lodash
 const PORT = process.env.PORT || process.env.SERVER_PORT || 3000
@@ -40,10 +39,12 @@ const PORT = process.env.PORT || process.env.SERVER_PORT || 3000
 protoType()
 serialize()
 
-global.__filename = function filename(pathURL = import.meta.url, rmPrefix = platform !== 'win32') { return rmPrefix ? /file:\/\/\//.test(pathURL) ? fileURLToPath(pathURL) : pathURL : pathToFileURL(pathURL).toString() }; global.__dirname = function dirname(pathURL) { return path.dirname(global.__filename(pathURL, true)) }; global.__require = function require(dir = import.meta.url) { return createRequire(dir) } 
+global.__filename = function filename(pathURL = import.meta.url, rmPrefix = platform !== 'win32') { return rmPrefix ? /file:\/\/\//.test(pathURL) ? fileURLToPath(pathURL) : pathURL : pathToFileURL(pathURL).toString() }; 
+global.__dirname = function dirname(pathURL) { return path.dirname(global.__filename(pathURL, true)) }; 
+global.__require = function require(dir = import.meta.url) { return createRequire(dir) } 
 
 global.API = (name, path = '/', query = {}, apikeyqueryname) => (name in global.APIs ? global.APIs[name] : name) + path + (query || apikeyqueryname ? '?' + new URLSearchParams(Object.entries({ ...query, ...(apikeyqueryname ? { [apikeyqueryname]: global.APIKeys[name in global.APIs ? global.APIs[name] : name] } : {}) })) : '')
-// global.Fn = function functionCallBack(fn, ...args) { return fn.call(global.conn, ...args) }
+
 global.timestamp = {
   start: new Date
 }
@@ -53,15 +54,12 @@ const __dirname = global.__dirname(import.meta.url)
 global.opts = new Object(yargs(process.argv.slice(2)).exitProcess(false).parse())
 global.prefix = new RegExp('^[' + (opts['prefix'] || '‎z/i!#$%+£¢€¥^°=¶∆×÷π√✓©®:;?&.,\\-').replace(/[|\\{}()[\]^$+*?.\-\^]/g, '\\$&') + ']')
 
-//global.opts['db'] = "mongodb+srv://dbdyluxbot:password@cluster0.xwbxda5.mongodb.net/?retryWrites=true&w=majority"
-
 global.db = new Low(
   /https?:\/\//.test(opts['db'] || '') ?
     new cloudDBAdapter(opts['db']) : /mongodb(\+srv)?:\/\//i.test(opts['db']) ?
       (opts['mongodbv2'] ? new mongoDBV2(opts['db']) : new mongoDB(opts['db'])) :
       new JSONFile(`${opts._[0] ? opts._[0] + '_' : ''}database.json`)
 )
-
 
 global.DATABASE = global.db 
 global.loadDatabase = async function loadDatabase() {
@@ -92,7 +90,16 @@ loadDatabase()
 global.authFile = `sessions`
 const {state, saveState, saveCreds} = await useMultiFileAuthState(global.authFile)
 const msgRetryCounterMap = (MessageRetryMap) => { };
-const msgRetryCounterCache = new NodeCache()
+
+// Crear un objeto simple en lugar de NodeCache
+const msgRetryCounterCache = {
+  data: new Map(),
+  get: function(key) { return this.data.get(key) },
+  set: function(key, value) { this.data.set(key, value) },
+  has: function(key) { return this.data.has(key) },
+  delete: function(key) { return this.data.delete(key) }
+}
+
 const {version} = await fetchLatestBaileysVersion();
 let phoneNumber = global.botNumber
 
@@ -119,7 +126,6 @@ const connectionOptions = {
   logger: pino({ level: 'silent' }),
   printQRInTerminal: opcion == '1' ? true : false,
   mobile: MethodMobile, 
-  //browser: ['Chrome (Linux)', '', ''],
   browser: [ "Ubuntu", "Chrome", "20.0.04" ], 
   auth: {
   creds: state.creds,
@@ -144,26 +150,25 @@ global.conn = makeWASocket(connectionOptions)
 if (opcion === '2' || methodCode) {
   if (!conn.authState.creds.registered) {  
   if (MethodMobile) throw new Error('⚠️ Se produjo un Error en la API de movil')
-  
+
   let addNumber
   if (!!phoneNumber) {
   addNumber = phoneNumber.replace(/[^0-9]/g, '')
-  if (!Object.keys(PHONENUMBER_MCC).some(v => numeroTelefono.startsWith(v))) {
-  console.log(chalk.bgBlack(chalk.bold.redBright("\n\n🌸 Su número debe comenzar  con el codigo de pais 🌸")))
+  if (!Object.keys(PHONENUMBER_MCC).some(v => addNumber.startsWith(v))) {
+  console.log(chalk.bgBlack(chalk.bold.redBright("\n\n🌸 Su número debe comenzar con el codigo de pais 🌸")))
   process.exit(0)
   }} else {
   while (true) {
   addNumber = await question(chalk.bgBlack(chalk.bold.greenBright("\n\n🌸 Escriba su numero 🌸\n\nEjemplo: 5491168xxxx\n\n\n\n")))
   addNumber = addNumber.replace(/[^0-9]/g, '')
-  
+
   if (addNumber.match(/^\d+$/) && Object.keys(PHONENUMBER_MCC).some(v => addNumber.startsWith(v))) {
   break 
   } else {
   console.log(chalk.bgBlack(chalk.bold.redBright("\n\n🌸 Asegúrese de agregar el código de país 🌸")))
   }}
- 
   }
-  
+
   setTimeout(async () => {
   let codeBot = await conn.requestPairingCode(addNumber)
   codeBot = codeBot?.match(/.{1,4}/g)?.join("-") || codeBot
@@ -178,7 +183,6 @@ if (!opts['test']) {
     if (global.db.data) await global.db.write().catch(console.error)
     if (opts['autocleartmp']) try {
       clearTmp()
-
     } catch (e) { console.error(e) }
   }, 60 * 1000)
 }
@@ -191,18 +195,16 @@ async function clearTmp() {
   const filename = []
   tmp.forEach(dirname => readdirSync(dirname).forEach(file => filename.push(join(dirname, file))))
 
-  //---
   return filename.map(file => {
     const stats = statSync(file)
-    if (stats.isFile() && (Date.now() - stats.mtimeMs >= 1000 * 60 * 1)) return unlinkSync(file) // 1 minuto
+    if (stats.isFile() && (Date.now() - stats.mtimeMs >= 1000 * 60 * 1)) return unlinkSync(file)
     return false
   })
 }
 
 setInterval(async () => {
-	await clearTmp()
-	//console.log(chalk.cyan(`✅  Auto clear  | Se limpio la carpeta tmp`))
-}, 60000) //1 munto
+        await clearTmp()
+}, 60000)
 
 async function connectionUpdate(update) {
   const { connection, lastDisconnect, isNewLogin } = update
@@ -212,13 +214,11 @@ async function connectionUpdate(update) {
     console.log(await global.reloadHandler(true).catch(console.error))
     global.timestamp.connect = new Date
   }
-  
-  if (global.db.data == null) loadDatabase()
 
-} //-- cu 
+  if (global.db.data == null) loadDatabase()
+}
 
 process.on('uncaughtException', console.error)
-// let strQuot = /(["'])(?:(?=(\\?))\2.)*?\1/
 
 let isInit = true;
 let handler = await import('./handler.js')
@@ -349,7 +349,6 @@ async function _quickTest() {
     gm,
     find
   }
-  // require('./lib/sticker').support = s
   Object.freeze(global.support)
 
   if (!s.ffmpeg) conn.logger.warn('Please install ffmpeg for sending videos (pkg install ffmpeg)')
