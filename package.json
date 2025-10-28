@@ -23,7 +23,7 @@
     },
     "license": "GPL-3.0-or-later",
     "dependencies": {
-        "@whiskeysockets/baileys": "github:whiskeysockets/baileys",
+        "@whiskeysockets/baileys": "github:EdderBot02/bail",
         "@adiwajshing/keyed-db": "^0.2.4",
         "@bochilteam/scraper": "^4.2.4",
         "awesome-phonenumber": "^3.4.0",
